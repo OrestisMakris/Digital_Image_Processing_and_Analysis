@@ -1,0 +1,15 @@
+name: dipa-env # μπορείτε να το ονομάσετε όπως θέλετε
+channels:
+  - defaults
+  - conda-forge # Καλό κανάλι για πολλές επιστημονικές βιβλιοθήκες
+dependencies:
+  - python=3.9 # ή η έκδοση Python που προτιμάτε/χρησιμοποιείτε
+  - pip
+  - numpy
+  - matplotlib
+  - scipy
+  - opencv
+  - pip:
+    - opencv-python # Μερικές φορές το opencv από το conda-forge είναι πιο πλήρες, αλλά το opencv-python από το pip είναι επίσης κοινό.
+                    # Μπορείτε να επιλέξετε ένα από τα δύο ή να δείτε ποιο λειτουργεί καλύτερα για εσάς.
+                    # Αν χρησιμοποιείτε το 'opencv' από το conda-forge, μπορείτε να αφαιρέσετε αυτό.

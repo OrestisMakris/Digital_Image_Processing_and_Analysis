@@ -32,7 +32,7 @@ plt.title('Original Image')
 plt.axis('off')
 
 plt.subplot(1, 3, 2)
-plt.imshow(sobel_magnitude_normalized,  cmap=' gray')
+plt.imshow(sobel_magnitude_normalized,  cmap='gray')
 plt.title('Sobel΄λ Edge Magnitude')
 plt.axis('off')
 
