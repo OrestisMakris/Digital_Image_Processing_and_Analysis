@@ -148,16 +148,18 @@ def main():
 
         rec_t = compress_image(img, b_s, 'threshold', r_percent)
 
-        mse_thre.append(mse(img_cropped, rec_t[:img_h_proces,:img_w_proces]))
+        msee = mse(img_cropped, rec_t[:img_h_proces,:img_w_proces])
+        
+        mse_thre.append(msee)
 
 
     plt.figure(figsize=(12, 7))
 
     plt.plot(R__values, mse_zon, 
                 
-             marker='o', label='Zonal masking')
+             marker='o', label='Zonal masking' ,color='darkcyan')
     
-    plt.plot(R__values, mse_thre, marker='s', label='Thrshold masking')
+    plt.plot(R__values, mse_thre, marker='s', label='Thrshold masking ' , color='darkred')
 
     plt.xlabel('Percentage of coefficients kept (r %')
     plt.ylabel('MSE')
