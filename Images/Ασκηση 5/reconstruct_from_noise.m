@@ -13,7 +13,8 @@ orig = im2double(imread('new_york.png'));
 % whuite SNR = 10 dB
 
 snr_db = 10;
-noisy = imnoise(orig, 'gaussian', 0, 10^(-snr_db/10));
+noisy = imnoise(orig, 'gaussian', 0, 10 ...
+    ^(-snr_db/10));
 
 % estimate snr
 noise_var = 10^(-snr_db/10);
@@ -26,11 +27,12 @@ K = noise_var / var(orig(:));
 wiener_known = deconvwnr(noisy, PSF_delta, K) ;
 
 % regularized inverse no prior nowledf of k
-wiener_unknown = deconvreg(noisy, PSF_delta);
+wiener_unknown = deconvreg(noisy, PSF_delta) ;
 
 fig1 = figure('Units','normalized','OuterPosition',[0 0 1 1]);
 t1 = tiledlayout(2,2,'Padding','compact','TileSpacing','compact');
 nexttile; imshow(orig); title('Αρχική','FontSize',14);
-nexttile; imshow(noisy); title('Νορυθμισμένη (SNR=10dB)');
-nexttile; imshow(wiener_known); title('Wiener (γνωστό K)');
-nexttile; imshow(wiener_unknown); title('Regularized inverse (άγνωστο)');
+nexttile; imshow(noisy); title('Noise (SNR=10dB)','FontSize',14);
+nexttile; imshow(wiener_known); title('Wiener (γνωστό K)','FontSize',14);
+nexttile; imshow(wiener_unknown); title('Regularized inverse (άγνωστο)','FontSize',14);
+
