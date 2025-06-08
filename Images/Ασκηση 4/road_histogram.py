@@ -68,7 +68,8 @@ def process_image(image_path):
 
 
 #ορισμός των αρχείων εικόνων
-image_files = ['dark_road_1.jpg', 'dark_road_2.jpg', 'dark_road_3.jpg']
+
+image_files = ['dark_road_1.jpg'    ,  "dark_road_2.jpg" , 'dark_road_3.jpg']
 
 
 for image_file_path in image_files:
