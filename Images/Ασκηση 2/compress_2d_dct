@@ -1,0 +1,144 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import cv2
+from scipy.fft import dctn, idctn
+
+def load_image(path):
+
+    """Load an image from the specified path and convert it to grayscale."""
+
+    img = cv2.imread(path, cv2.IMREAD_GRAYSCALE)
+    return img.astype(np.float64) / 255.0
+
+def dct2(block):
+
+    """Compute the 2D Discrete Cosine Transform of a block."""
+
+    return dctn(block, type=2, norm="ortho", axes=(0,1))
+
+def idct2(C):
+
+    """Compute the 2D Inverse Discrete Cosine Transform of coefficients C."""
+
+    return idctn(C, type=2, norm="ortho", axes=(0,1))
+
+def get_zonal_mask(N, keep):
+
+    mask = np.zeros((N, N), bool)
+    count = 0
+
+    for s in range(2*N - 1):
+
+        for u in range(max(0, s-N+1), min(N, s+1)):
+
+            v = s - u
+
+            if 0 <= u < N and 0 <= v < N:
+
+                if count < keep:
+
+                    mask[u,v] = True
+                    count += 1
+
+                else:
+
+                    return mask
+                
+    return mask
+
+def get_threshold_mask(C, keep_ratio):
+
+    """Create a mask based on a threshold determined by the keep_ratio of coefficient """
+
+    flat_abs_C = np.abs(C).ravel()
+    num_coeffs_to_keep = int(np.ceil(keep_ratio * flat_abs_C.size))
+
+    if num_coeffs_to_keep >= flat_abs_C.size:
+
+        thresh = 0
+    else:
+
+        idx_thresh = flat_abs_C.size - num_coeffs_to_keep
+        thresh = np.partition(flat_abs_C, idx_thresh)[idx_thresh]
+
+    return np.abs(C) >= thresh
+
+def mse(a, b):
+
+    """Calculate the Mean Squared Error between two images."""
+    
+    return np.mean((a - b)**2)
+
+def compress_image(img, block_size, mask_fn):
+    """Compress an image using 2D DCT with a specified block size and mask function.""" 
+
+    H, W = img.shape
+
+    out = np.zeros_like(img)
+
+    # υπολογισμός του αριθμού των μπλοκς μας
+
+    n_by = H //  block_size
+    n_bx = W //   block_size
+
+
+
+    for by in range(n_by):
+
+        for bx in range(n_bx):
+
+            y0 = by * block_size
+            x0 = bx * block_size
+            block = img[y0:y0+block_size, x0:x0+block_size]
+
+            C = dct2(block)
+            current_mask = mask_fn(C)
+            C_masked = C * current_mask
+            rec = idct2(C_masked)
+            out[y0:y0+block_size, x0:x0+block_size] = rec
+
+    return out
+
+def main():
+
+    img_path = 'board.png'
+    img = load_image(img_path)
+    B = 32
+    
+    r_values = np.arange(5, 51, 5)
+
+    mse_zon = []
+    mse_thre = []
+
+    img_h_proces = (img.shape[0] // B) * B
+    img_w_proces = (img.shape[1] // B) * B
+    img_cropped = img[:img_h_proces, :img_w_proces]
+
+    def zonal_mask_function(C_coeffs):
+        keep_count_zonal = int(np.round((r_percent/100.0) * B * B))
+        return get_zonal_mask(B, keep_count_zonal)
+
+    def threshold_mask_function(C_coeffs):
+        keep_ratio_thresh = r_percent / 100.0
+        return get_threshold_mask(C_coeffs, keep_ratio_thresh)
+
+    for r_percent in r_values:
+        rec_z = compress_image(img, B, zonal_mask_function)
+        mse_zon.append(mse(img_cropped, rec_z[:img_h_proces, :img_w_proces]))
+
+        rec_t = compress_image(img, B, threshold_mask_function)
+        mse_thre.append(mse(img_cropped, rec_t[:img_h_proces, :img_w_proces]))
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(r_values, mse_zon, marker='o', label='Zonal masking')
+    plt.plot(r_values, mse_thre, marker='s', label='Threshold masking')
+    plt.xlabel('Percentage of coefficients kept (r %')
+    plt.ylabel('MSE')
+    plt.title(f'2D-DCT Compresion MSE block size: {B}x{B} on  "{img_path}"')
+    plt.legend()
+    plt.grid(True)
+    plt.xticks(r_values)
+    plt.show()
+
+if __name__ == '__main__':
+    main()
