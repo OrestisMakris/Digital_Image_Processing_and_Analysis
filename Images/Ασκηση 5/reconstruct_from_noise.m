@@ -5,12 +5,14 @@
 
 %% Μέρος Α: Υποβάθμιση με θόρυβο και φίλτρο Wiener
 
+clear all;
+close all;
 
 orig = im2double(imread('new_york.png'));
 
 % whuite SNR = 10 dB
 
-snr_db = 30;
+snr_db = 10;
 noisy = imnoise(orig, 'gaussian', 0, 10^(-snr_db/10));
 
 % estimate snr
@@ -32,43 +34,3 @@ nexttile; imshow(orig); title('Αρχική','FontSize',14);
 nexttile; imshow(noisy); title('Νορυθμισμένη (SNR=10dB)');
 nexttile; imshow(wiener_known); title('Wiener (γνωστό K)');
 nexttile; imshow(wiener_unknown); title('Regularized inverse (άγνωστο)');
-
-%% Μέρος Β: Απόκριση PSF & Αντίστροφο Φιλτράρισμα
-
-[m,n] = size(orig);
-delta = zeros(m,n);
-delta(ceil(m/2), ceil(n/2)) = 1;
-h = psf(delta);
-H = fftshift(fft2(h));
-fig2 = figure('Units','normalized','OuterPosition',[0 0 1 1]);
-imshow(log1p(abs(H)), []); colorbar; title('PSF Frequency Response (log magnitude)','FontSize',14);
-
-blurred = psf(orig);
-fig3 = figure('Units','normalized','OuterPosition',[0 0 1 1]);
-t2 = tiledlayout(1,2,'Padding','compact','TileSpacing','compact');
-nexttile; imshow(orig); title('Original','FontSize',14);
-nexttile; imshow(blurred); title('Blurred by PSF','FontSize',14);
-
-thresholds = logspace(-4, -1, 10);
-mse_vals = zeros(size(thresholds));
-F_blur = fft2(blurred);
-for i = 1:length(thresholds)
-    thr = thresholds(i);
-    H_inv = zeros(size(H));
-    mask = abs(H) >= thr;
-    H_inv(mask) = 1 ./ H(mask);
-    recon = real(ifft2(ifftshift(H_inv) .* F_blur));
-    mse_vals(i) = immse(recon, orig);
-end
-
-fig4 = figure('Units','normalized','OuterPosition',[0 0 1 1]);
-semilogx(thresholds, mse_vals, 'o-'); grid on;
-xlabel('Threshold','FontSize',14); ylabel('MSE','FontSize',14);
-title('MSE vs Threshold','FontSize',14);
-
-H_inv_full = 1 ./ H;
-recon_no_thr = real(ifft2(ifftshift(H_inv_full) .* F_blur));
-fig5 = figure('Units','normalized','OuterPosition',[0 0 1 1]);
-t3 = tiledlayout(1,2,'Padding','compact','TileSpacing','compact');
-nexttile; imshow(orig); title('Original','FontSize',14);
-nexttile; imshow(recon_no_thr); title('Inverse Filter (no threshold)','FontSize',14);
