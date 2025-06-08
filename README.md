@@ -137,17 +137,3 @@ pip install opencv-python numpy matplotlib scipy
     ```
 3.  Για MATLAB:
     Ανοίξτε το MATLAB, πλοηγηθείτε στον κατάλογο της άσκησης και εκτελέστε το `.m` αρχείο από τη γραμμή εντολών του MATLAB ή τον editor.
-
-## Εξαρτήσεις
-
-*   **Python 3.x**
-    *   OpenCV (`cv2`)
-    *   NumPy
-    *   Matplotlib
-    *   SciPy (κυρίως για τη φόρτωση αρχείων `.mat` στην Άσκηση 3)
-*   **MATLAB**
-    *   Image Processing Toolbox™ (για τις Ασκήσεις 2 και 5)
-
----
-
-Μπορείς να αποθηκεύσεις αυτό το περιεχόμενο σε ένα αρχείο με όνομα `README.md` στον κύριο κατάλογο του project σου (`Digital_Image_Processing_and_Analysis`). Μην ξεχάσεις να συμπληρώσεις την πληροφορία για τη γλώσσα στην Άσκηση 2 μόλις το επιβεβαιώσεις.
