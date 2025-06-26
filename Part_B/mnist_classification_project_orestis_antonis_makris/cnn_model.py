@@ -42,31 +42,22 @@ class MNISTConvNet(nn.Module):
         Returns:
             Output tensor of shape (batch_size, 10)
         """
-        # First convolutional block
-        x = self.conv1(x)  # (batch, 6, 26, 26)
+
+        x = self.conv1(x)  
         x = F.relu(x)
-        x = self.pool1(x)  # (batch, 6, 13, 13)
-        
-        # Second convolutional block
-        x = self.conv2(x)  # (batch, 16, 11, 11)
+        x = self.pool1(x) 
+        x = self.conv2(x)  
         x = F.relu(x)
-        x = self.pool2(x)  # (batch, 16, 5, 5)
-        
-        # Flatten for fully connected layers
-        x = x.view(-1, 16 * 5 * 5)  # (batch, 400)
-        
-        # First fully connected layer
-        x = self.fc1(x)  # (batch, 120)
+        x = self.pool2(x)  
+        x = x.view(-1, 16 * 5 * 5) 
+        x = self.fc1(x)  
         x = F.relu(x)
         x = self.dropout(x)
-        
-        # Second fully connected layer
-        x = self.fc2(x)  # (batch, 84)
+        x = self.fc2(x) 
         x = F.relu(x)
         x = self.dropout(x)
-        
-        # Output layer (no activation, will be applied in loss function)
-        x = self.fc3(x)  # (batch, 10)
+        x = self.fc3(x) 
+        x = F.softmax(x, dim=1)
         
         return x
     
@@ -100,52 +91,3 @@ class MNISTConvNet(nn.Module):
         
         return feature_maps
 
-def count_parameters(model):
-    """
-    Count the number of trainable parameters in the model
-    
-    Args:
-        model: PyTorch model
-        
-    Returns:
-        Number of trainable parameters
-    """
-    return sum(p.numel() for p in model.parameters() if p.requires_grad)
-
-def print_model_info(model):
-    """
-    Print detailed information about the model architecture
-    
-    Args:
-        model: PyTorch model
-    """
-    print("="*50)
-    print("MODEL ARCHITECTURE")
-    print("="*50)
-    print(model)
-    print("="*50)
-    print(f"Total trainable parameters: {count_parameters(model):,}")
-    print("="*50)
-    
-    # Print layer-wise parameter count
-    print("\nLayer-wise parameter count:")
-    for name, param in model.named_parameters():
-        if param.requires_grad:
-            print(f"{name}: {param.numel():,} parameters")
-
-if __name__ == "__main__":
-    # Test the model
-    model = MNISTConvNet()
-    print_model_info(model)
-    
-    # Test forward pass
-    dummy_input = torch.randn(1, 1, 28, 28)
-    output = model(dummy_input)
-    print(f"\nInput shape: {dummy_input.shape}")
-    print(f"Output shape: {output.shape}")
-    
-    # Test feature map extraction
-    feature_maps = model.get_feature_maps(dummy_input)
-    print(f"\nFeature map shapes:")
-    for name, fm in feature_maps.items():
-        print(f"{name}: {fm.shape}")

@@ -96,12 +96,3 @@ def visualize_batch_samples(train_loader, num_samples=16):
     plt.tight_layout()
     plt.show()
 
-if __name__ == "__main__":
-    train_loader, test_loader, classes = load_mnist_data(batch_size=64)
-    
-    print(f"Training samples: {len(train_loader.dataset)}")
-    print(f"Test samples: {len(test_loader.dataset)}")
-    print(f"Classes: {classes}")
-    
-    visualize_mnist_samples(train_loader, classes)
-    visualize_batch_samples(train_loader, num_samples=
