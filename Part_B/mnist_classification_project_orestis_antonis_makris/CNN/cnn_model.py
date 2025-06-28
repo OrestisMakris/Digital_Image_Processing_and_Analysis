@@ -57,37 +57,7 @@ class MNISTConvNet(nn.Module):
         x = F.relu(x)
         x = self.dropout(x)
         x = self.fc3(x) 
-        x = F.softmax(x, dim=1)
+
         
         return x
     
-    def get_feature_maps(self, x):
-        """
-        Get intermediate feature maps for visualization
-        
-        Args:
-            x: Input tensor
-            
-        Returns:
-            Dictionary containing feature maps from different layers
-        """
-        feature_maps = {}
-        
-        # First conv layer
-        x = self.conv1(x)
-        feature_maps['conv1'] = x.clone()
-        x = F.relu(x)
-        feature_maps['conv1_relu'] = x.clone()
-        x = self.pool1(x)
-        feature_maps['pool1'] = x.clone()
-        
-        # Second conv layer
-        x = self.conv2(x)
-        feature_maps['conv2'] = x.clone()
-        x = F.relu(x)
-        feature_maps['conv2_relu'] = x.clone()
-        x = self.pool2(x)
-        feature_maps['pool2'] = x.clone()
-        
-        return feature_maps
-

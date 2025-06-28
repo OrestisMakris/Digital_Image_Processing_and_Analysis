@@ -1,0 +1,32 @@
+import torch
+from CNN.data_loader import load_mnist_data
+from hog_features import extract_hog_features
+from svm_classifier import train_svm, predict_svm
+from evaluation_hog import compute_confusion_matrix, plot_confusion_matrix, print_report
+
+def main():
+    DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(f"Using device: {DEVICE}")
+
+    # Φόρτωμα MNIST
+    train_loader, test_loader, classes = load_mnist_data(batch_size=256)
+
+    # Εξαγωγή HOG
+    X_train, y_train = extract_hog_features(train_loader, patch_size=8)
+    X_test,  y_test  = extract_hog_features(test_loader,  patch_size=8)
+
+    # Εκπαίδευση SVM
+    svm = train_svm(X_train, y_train, C=1.0, kernel='linear')
+
+    # Προβλέψεις & Αξιολόγηση
+    y_pred = predict_svm(svm, X_test)
+    print_report(y_test, y_pred, classes)
+
+    cm = compute_confusion_matrix(y_test, y_pred, classes, normalize=False)
+    plot_confusion_matrix(cm, classes, title='Confusion Matrix', fmt='d')
+
+    cmn = compute_confusion_matrix(y_test, y_pred, classes, normalize=True)
+    plot_confusion_matrix(cmn, classes, title='Normalized CM', fmt='.2f')
+
+if __name__ == "__main__":
+    main()
