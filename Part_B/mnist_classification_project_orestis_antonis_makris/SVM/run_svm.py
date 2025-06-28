@@ -1,5 +1,11 @@
+import sys
+import os
+
+# Add the sibling "CNN" folder to the Python path so we can import data_loader
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'CNN')))
+
 import torch
-from CNN.data_loader import load_mnist_data
+from data_loader import load_mnist_data
 from hog_features import extract_hog_features
 from svm_classifier import train_svm, predict_svm
 from evaluation_hog import compute_confusion_matrix, plot_confusion_matrix, print_report
