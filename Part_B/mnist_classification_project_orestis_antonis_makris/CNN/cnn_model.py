@@ -4,7 +4,7 @@ import torch.nn.functional as F
 
 class MNISTConvNet(nn.Module):
     """
-    CNN Architecture based on the provided diagram:
+    Carchitecture based on the provided diagram
     Input: 28x28 grayscale images
     
     Architecture:
@@ -37,10 +37,10 @@ class MNISTConvNet(nn.Module):
         Forward pass through the network
         
         Args:
-            x: Input tensor of shape (batch_size, 1, 28, 28)
+            x: Input tensor of shape (batch_size 1 28 28)
             
         Returns:
-            Output tensor of shape (batch_size, 10)
+            Output tensor of shape (batch_size 10)
         """
 
         x = self.conv1(x)  

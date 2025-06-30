@@ -5,19 +5,26 @@ import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report, precision_score, recall_score, f1_score
 
 def get_predictions(model, test_loader, device='cuda'):
+
     """
     Get model predictions for the entire test set.
     """
+
     model.eval()
+
     predictions = []
     true_labels = []
+
     with torch.no_grad():
+
         for data, targets in test_loader:
+
             data, targets = data.to(device), targets.to(device)
             outputs = model(data)
             _, predicted = torch.max(outputs, 1)
             predictions.extend(predicted.cpu().numpy())
             true_labels.extend(targets.cpu().numpy())
+
     return np.array(predictions), np.array(true_labels)
 
 def plot_confusion_matrix(true_labels, predictions, classes, normalize=False, title='Confusion Matrix'):
@@ -25,11 +32,15 @@ def plot_confusion_matrix(true_labels, predictions, classes, normalize=False, ti
     Plot confusion matrix using seaborn.
     """
     cm = confusion_matrix(true_labels, predictions)
+
     if normalize:
+
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         fmt = '.2f'
         title += ' (Normalized)'
+
     else:
+
         fmt = 'd'
     
     plt.figure(figsize=(10, 8))
@@ -40,15 +51,20 @@ def plot_confusion_matrix(true_labels, predictions, classes, normalize=False, ti
     plt.ylabel('True Label')
     plt.tight_layout()
     plt.show()
+
 def plot_conv_filters(model, num_filters=6):
+
     """
-    Display the first `num_filters` convolutional kernels of conv1.
+    Display the first `num_filters` convolutional kernels of conv1
     """
-    # pull out the weight tensor, shape [out_ch, in_ch=1, kH, kW]
+    
+
     kernels = model.conv1.weight.data.clone().cpu().squeeze(1)
     fig, axes = plt.subplots(1, num_filters, figsize=(num_filters*2, 2))
     fig.suptitle('First–Layer Conv Filters', fontsize=16)
+
     for i in range(num_filters):
+
         ax = axes[i]
         filt = kernels[i]
         # normalize to [0,1]
@@ -56,13 +72,16 @@ def plot_conv_filters(model, num_filters=6):
         ax.imshow(filt, cmap='viridis')
         ax.set_title(f'#{i}')
         ax.axis('off')
+
     plt.tight_layout()
     plt.show()
 
 def print_classification_report(true_labels, predictions, classes):
+
     """
-    Print a detailed classification report from sklearn.
+    Print a detailed classification report from sklea
     """
+
     print("="*50)
     print("CLASSIFICATION REPORT")
     print("="*50)
@@ -70,9 +89,12 @@ def print_classification_report(true_labels, predictions, classes):
                               target_names=classes, digits=4))
 
 def plot_per_class_metrics(true_labels, predictions, classes):
+
+
     """
-    Plot per-class precision, recall, and F1-score.
+    Plot per-class precision, recall, and F1-scor
     """
+
     precision = precision_score(true_labels, predictions, average=None)
     recall = recall_score(true_labels, predictions, average=None)
     f1 = f1_score(true_labels, predictions, average=None)

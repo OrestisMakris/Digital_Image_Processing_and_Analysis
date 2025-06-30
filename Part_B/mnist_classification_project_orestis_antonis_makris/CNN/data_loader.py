@@ -7,11 +7,11 @@ import numpy as np
 
 def load_mnist_data(batch_size=64, download=True):
     """
-    Load MNIST dataset and create data loaders.
+    Load MNIT dataset and create data loaders.
     
     Args:
-        batch_size (int): Size of mini-batches.
-        download (bool): Whether to download MNIST if not present.
+        batch_size: Size of mini-batches.
+        download : Whether to download MNIST if not present.
     
     Returns:
         train_loader, test_loader, classes.
@@ -33,7 +33,7 @@ def load_mnist_data(batch_size=64, download=True):
 
 def visualize_mnist_samples(train_loader, classes):
     """
-    Visualize one sample from each MNIST class.
+    Visualize oe sample from each MNIST class.
     
     Args:
         train_loader: Training data loader.
@@ -68,7 +68,7 @@ def visualize_batch_samples(train_loader, num_samples=16):
     
     Args:
         train_loader: Training data loader.
-        num_samples: Number of samples to show.
+        num_samples: Number of samples to show
     """
     images, labels = next(iter(train_loader))
     

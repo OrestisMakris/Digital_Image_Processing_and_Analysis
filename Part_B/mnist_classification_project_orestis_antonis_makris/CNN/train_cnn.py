@@ -1,15 +1,18 @@
 import torch
 import torch.nn as nn
-import torch.optim as optim
+import torch.optim  as optim
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 import time
 
-from data_loader import load_mnist_data
+from data_loader import  load_mnist_data
 from cnn_model import MNISTConvNet
 
 def train_epoch(model, train_loader, criterion, optimizer, device):
-    """Trains the model for one epoch."""
+
+    """Trains the model for one epoch"""
+
+
     model.train()
     running_loss, correct, total = 0.0, 0, 0
     for data, targets in train_loader:
@@ -28,7 +31,9 @@ def train_epoch(model, train_loader, criterion, optimizer, device):
     return running_loss / len(train_loader), 100. * correct / total
 
 def evaluate(model, test_loader, criterion, device):
+
     """Evaluates the model on the test set."""
+
     model.eval()
     test_loss, correct, total = 0.0, 0, 0
     with torch.no_grad():
@@ -44,7 +49,10 @@ def evaluate(model, test_loader, criterion, device):
     return test_loss / len(test_loader), 100. * correct / total
 
 def train_model(model, train_loader, test_loader, num_epochs=10, learning_rate=1e-3, device='cuda'):
+
     """Runs the full training loop."""
+
+
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=learning_rate)
     history = {'train_loss': [], 'train_acc': [], 'test_loss': [], 'test_acc': []}
@@ -68,10 +76,12 @@ def train_model(model, train_loader, test_loader, num_epochs=10, learning_rate=1
     return history
 
 def plot_training_history(history):
+
     """
     Plots training and test loss and accuracy
     with a dark cyan / dark red theme.
     """
+
     epochs = range(1, len(history['train_loss']) + 1)
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
 
@@ -101,7 +111,9 @@ def plot_training_history(history):
     plt.show()
 
 def save_model(model, filepath):
+
     """Saves only the model's weights."""
+
     torch.save(model.state_dict(), filepath)
     print(f"Model state saved to {filepath}")
 
