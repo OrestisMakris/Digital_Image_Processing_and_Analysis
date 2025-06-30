@@ -36,7 +36,7 @@ def visualize_mnist_samples(train_loader, classes):
     Visualize oe sample from each MNIST class.
     
     Args:
-        train_loader: Training data loader.
+        train_loader: Training dat loader.
         classes: List of class names.
     """
     images, labels = next(iter(train_loader))
